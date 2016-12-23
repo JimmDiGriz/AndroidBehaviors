@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
+import org.androidannotations.annotations.EBean;
+
 import ru.happy_giraffe.androidbehaviors.R;
 import ru.happy_giraffe.androidbehaviors.behaviors.ActivityBehavior;
 import ru.happy_giraffe.androidbehaviors.containers.BehavioralActivity;
@@ -24,7 +26,7 @@ public class TestBehavior extends ActivityBehavior {
     public void onStart() {
         super.onStart();
 
-        messageTxt = (TextView)((BehavioralActivity)getOwner().getContext()).findViewById(R.id.message_txt);
+        messageTxt = getView(R.id.message_txt, TextView.class);
 
         messageTxt.setOnClickListener(new View.OnClickListener() {
             @Override

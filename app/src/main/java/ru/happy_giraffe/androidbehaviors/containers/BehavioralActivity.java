@@ -1,11 +1,19 @@
 package ru.happy_giraffe.androidbehaviors.containers;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
+import ru.happy_giraffe.androidbehaviors.annotations.ABehavior;
 import ru.happy_giraffe.androidbehaviors.behaviors.ActivityBehavior;
 import ru.happy_giraffe.androidbehaviors.core.Container;
 
@@ -22,7 +30,45 @@ public abstract class BehavioralActivity extends AppCompatActivity {
         container.fillBehaviors(getComponents());
     }
 
-    public abstract List<ActivityBehavior> getComponents();
+    @SuppressWarnings("unchecked")
+    public List<ActivityBehavior> getComponents() {
+        Class<? extends BehavioralActivity> object = getClass();
+
+        List<ActivityBehavior> temp = new ArrayList<>();
+
+        for (Field field: object.getFields()) {
+            try {
+                if (!field.isAnnotationPresent(ABehavior.class)) {
+                    continue;
+                }
+
+                if (field.get(this) != null) {
+                    temp.add((ActivityBehavior) field.get(this));
+                    continue;
+                }
+
+                ABehavior annotation = field.getAnnotation(ABehavior.class);
+
+                String name = annotation.name();
+
+                Class type = field.getType();
+
+                Class[] constructorParamTypes = new Class[] {Container.class, String.class};
+
+                Constructor constructor = type.getConstructor(constructorParamTypes);
+
+                if (constructor == null) {
+                    continue;
+                }
+
+                temp.add((ActivityBehavior) constructor.newInstance(container, name));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return temp;
+    }
 
     public void attach(ActivityBehavior component) {
         container.attach(component);

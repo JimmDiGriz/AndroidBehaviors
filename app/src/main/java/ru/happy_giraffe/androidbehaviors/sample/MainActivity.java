@@ -6,18 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.happy_giraffe.androidbehaviors.R;
+import ru.happy_giraffe.androidbehaviors.annotations.ABehavior;
 import ru.happy_giraffe.androidbehaviors.behaviors.ActivityBehavior;
 import ru.happy_giraffe.androidbehaviors.containers.BehavioralActivity;
 import ru.happy_giraffe.androidbehaviors.sample.behaviors.TestBehavior;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BehavioralActivity {
-    @Override
-    public List<ActivityBehavior> getComponents() {
-        List<ActivityBehavior> temp = new ArrayList<>();
+    @ABehavior(name = "test")
+    protected TestBehavior testBehavior;
 
-        temp.add(new TestBehavior(container, "test"));
+    @ABehavior(name = "test2")
+    protected TestBehavior testBehavior2;
 
-        return temp;
-    }
+    @ABehavior(name = "test3")
+    protected TestBehavior testBehavior3;
+
+    @ABehavior(name = "test4")
+    protected TestBehavior testBehavior4;
 }

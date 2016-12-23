@@ -2,6 +2,8 @@ package ru.happy_giraffe.androidbehaviors.behaviors;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import ru.happy_giraffe.androidbehaviors.core.Behavior;
 import ru.happy_giraffe.androidbehaviors.core.Container;
@@ -18,6 +20,12 @@ public abstract class ActivityBehavior extends Behavior {
 
     }
 
+    /**
+     * if owner activity is @EActivity from android annotations, then in onStart() method we can start work with views.
+     * if owner activity is not @EActivity, then we can start work with views in onCreate(),
+     * but in this case we need to place set content view before call super, facing NullPointerException otherwise.
+     * cause of it onStart() always is better place for starting work with behavior.
+     * */
     public void onStart() {
 
     }
@@ -43,5 +51,17 @@ public abstract class ActivityBehavior extends Behavior {
         if (this.owner != null) {
             this.owner.destroy();
         }
+    }
+
+    protected View getView(int id) {
+        return getActivity().findViewById(id);
+    }
+
+    protected <T extends View> T getView(int id, Class<T> cls) {
+        return cls.cast(getView(id));
+    }
+
+    protected AppCompatActivity getActivity() {
+        return (AppCompatActivity) owner.getContext();
     }
 }
