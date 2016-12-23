@@ -1,4 +1,4 @@
-package ru.happy_giraffe.androidbehaviors.sample;
+package ru.happy_giraffe.androidbehaviors.sample.activites;
 
 import org.androidannotations.annotations.EActivity;
 

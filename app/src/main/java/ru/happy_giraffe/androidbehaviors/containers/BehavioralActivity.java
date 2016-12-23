@@ -95,7 +95,7 @@ public abstract class BehavioralActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         for (ActivityBehavior behavior : container.getComponents()) {
-            behavior.onCreate();
+            behavior.onCreate(savedInstanceState);
         }
     }
 
