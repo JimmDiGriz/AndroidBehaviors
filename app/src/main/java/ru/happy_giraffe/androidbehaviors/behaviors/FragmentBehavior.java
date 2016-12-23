@@ -27,10 +27,6 @@ public abstract class FragmentBehavior extends Behavior {
         this.fragment = fragment;
     }
 
-    public void onAttach(Context context) {
-
-    }
-
     public void onCreate(@Nullable Bundle savedInstanceState) {
 
     }

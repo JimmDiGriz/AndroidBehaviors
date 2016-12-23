@@ -1,13 +1,9 @@
-package ru.happy_giraffe.androidbehaviors.sample.activites;
+package ru.happy_giraffe.androidbehaviors.sample.activities;
 
 import org.androidannotations.annotations.EActivity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ru.happy_giraffe.androidbehaviors.R;
 import ru.happy_giraffe.androidbehaviors.annotations.ABehavior;
-import ru.happy_giraffe.androidbehaviors.behaviors.ActivityBehavior;
 import ru.happy_giraffe.androidbehaviors.containers.BehavioralActivity;
 import ru.happy_giraffe.androidbehaviors.sample.behaviors.TestBehavior;
 

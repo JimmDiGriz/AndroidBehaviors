@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ru.happy_giraffe.androidbehaviors.interfaces.OnBehaviorAttachListener;
+import ru.happy_giraffe.androidbehaviors.interfaces.OnBehaviorDetachListener;
+
 /**
  * Created by JimmDiGriz on 22.12.2016.
  */
@@ -16,6 +19,8 @@ public final class Container<T extends Behavior> {
     private List<T> components;
     private Context context;
     private Map<String, T> cachedMap;
+    private OnBehaviorAttachListener<T> onBehaviorAttachListener;
+    private OnBehaviorDetachListener<T> onBehaviorDetachListener;
 
     public Container(Context context) {
         components = new ArrayList<>();
@@ -74,11 +79,17 @@ public final class Container<T extends Behavior> {
 
         components.add(component);
         cachedMap.put(component.getName(), component);
+
+        callAttachListener(component);
     }
 
     public void detach(T component) {
         components.remove(component);
         cachedMap.remove(component.getName());
+
+        if (onBehaviorDetachListener != null) {
+            onBehaviorDetachListener.detach(component);
+        }
     }
 
     public void attachBefore(T from, T component) {
@@ -86,6 +97,8 @@ public final class Container<T extends Behavior> {
 
         components.add(index, component);
         cachedMap.put(component.getName(), component);
+
+        callAttachListener(component);
     }
 
     public void attachAfter(T from, T component) {
@@ -93,11 +106,15 @@ public final class Container<T extends Behavior> {
 
         components.add(index + 1, component);
         cachedMap.put(component.getName(), component);
+
+        callAttachListener(component);
     }
 
     public void attachFirst(T component) {
         components.add(0, component);
         cachedMap.put(component.getName(), component);
+
+        callAttachListener(component);
     }
 
     public void destroy(){
@@ -108,5 +125,19 @@ public final class Container<T extends Behavior> {
 
     public Context getContext() {
         return context;
+    }
+
+    public void setOnBehaviorAttachListener(OnBehaviorAttachListener<T> onBehaviorAttachListener) {
+        this.onBehaviorAttachListener = onBehaviorAttachListener;
+    }
+
+    public void setOnBehaviorDetachListener(OnBehaviorDetachListener<T> onBehaviorDetachListener) {
+        this.onBehaviorDetachListener = onBehaviorDetachListener;
+    }
+
+    private void callAttachListener(T behavior) {
+        if (onBehaviorAttachListener != null) {
+            onBehaviorAttachListener.attach(behavior);
+        }
     }
 }

@@ -16,6 +16,8 @@ import java.util.List;
 import ru.happy_giraffe.androidbehaviors.annotations.ABehavior;
 import ru.happy_giraffe.androidbehaviors.behaviors.FragmentBehavior;
 import ru.happy_giraffe.androidbehaviors.core.Container;
+import ru.happy_giraffe.androidbehaviors.interfaces.OnBehaviorAttachListener;
+import ru.happy_giraffe.androidbehaviors.interfaces.OnBehaviorDetachListener;
 
 /**
  * Created by JimmDiGriz on 23.12.2016.
@@ -25,9 +27,6 @@ public class BehavioralFragment extends Fragment {
 
     public BehavioralFragment() {
         super();
-
-        container = new Container<>(getActivity());
-        container.fillBehaviors(getComponents());
     }
 
     @SuppressWarnings("unchecked")
@@ -69,13 +68,46 @@ public class BehavioralFragment extends Fragment {
         return temp;
     }
 
+    public void attach(FragmentBehavior component) {
+        container.attach(component);
+    }
+
+    public void detach(FragmentBehavior component) {
+        container.detach(component);
+    }
+
+    public void attachBefore(FragmentBehavior from, FragmentBehavior component) {
+        container.attachBefore(from, component);
+    }
+
+    public void attachAfter(FragmentBehavior from, FragmentBehavior component) {
+        container.attachAfter(from, component);
+    }
+
+    public void attachFirst(FragmentBehavior component) {
+        container.attachFirst(component);
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        for (FragmentBehavior behavior : container.getComponents()) {
-            behavior.onAttach(context);
-        }
+        container = new Container<>(getActivity());
+        container.fillBehaviors(getComponents());
+
+        container.setOnBehaviorAttachListener(new OnBehaviorAttachListener<FragmentBehavior>() {
+            @Override
+            public void attach(FragmentBehavior behavior) {
+                onBehaviorAttach(behavior);
+            }
+        });
+
+        container.setOnBehaviorDetachListener(new OnBehaviorDetachListener<FragmentBehavior>() {
+            @Override
+            public void detach(FragmentBehavior behavior) {
+                onBehaviorDetach(behavior);
+            }
+        });
     }
 
     @Override
@@ -178,5 +210,13 @@ public class BehavioralFragment extends Fragment {
         for (FragmentBehavior behavior : container.getComponents()) {
             behavior.onDetach();
         }
+    }
+
+    protected void onBehaviorAttach(FragmentBehavior behavior) {
+
+    }
+
+    protected void onBehaviorDetach(FragmentBehavior behavior) {
+
     }
 }

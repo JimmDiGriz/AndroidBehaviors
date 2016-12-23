@@ -1,21 +1,19 @@
 package ru.happy_giraffe.androidbehaviors.containers;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.happy_giraffe.androidbehaviors.annotations.ABehavior;
 import ru.happy_giraffe.androidbehaviors.behaviors.ActivityBehavior;
 import ru.happy_giraffe.androidbehaviors.core.Container;
+import ru.happy_giraffe.androidbehaviors.interfaces.OnBehaviorAttachListener;
+import ru.happy_giraffe.androidbehaviors.interfaces.OnBehaviorDetachListener;
 
 /**
  * Created by JimmDiGriz on 22.12.2016.
@@ -28,6 +26,20 @@ public abstract class BehavioralActivity extends AppCompatActivity {
 
         container = new Container<>(this);
         container.fillBehaviors(getComponents());
+
+        container.setOnBehaviorAttachListener(new OnBehaviorAttachListener<ActivityBehavior>() {
+            @Override
+            public void attach(ActivityBehavior behavior) {
+                onBehaviorAttach(behavior);
+            }
+        });
+
+        container.setOnBehaviorDetachListener(new OnBehaviorDetachListener<ActivityBehavior>() {
+            @Override
+            public void detach(ActivityBehavior behavior) {
+                onBehaviorDetach(behavior);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -151,5 +163,13 @@ public abstract class BehavioralActivity extends AppCompatActivity {
         }
 
         super.onDestroy();
+    }
+
+    protected void onBehaviorAttach(ActivityBehavior behavior) {
+
+    }
+
+    protected void onBehaviorDetach(ActivityBehavior behavior) {
+
     }
 }
