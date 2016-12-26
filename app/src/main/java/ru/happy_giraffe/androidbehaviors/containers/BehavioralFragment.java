@@ -17,6 +17,7 @@ import java.util.List;
 import ru.happy_giraffe.androidbehaviors.annotations.ABehavior;
 import ru.happy_giraffe.androidbehaviors.behaviors.FragmentBehavior;
 import ru.happy_giraffe.androidbehaviors.core.Container;
+import ru.happy_giraffe.androidbehaviors.exceptions.DuplicateBehaviorsInContainer;
 import ru.happy_giraffe.androidbehaviors.interfaces.OnBehaviorAttachListener;
 import ru.happy_giraffe.androidbehaviors.interfaces.OnBehaviorDetachListener;
 
@@ -70,7 +71,11 @@ public class BehavioralFragment extends Fragment {
     }
 
     public void attach(FragmentBehavior component) {
-        container.attach(component);
+        try {
+            container.attach(component);
+        } catch (DuplicateBehaviorsInContainer duplicateBehaviorsInContainer) {
+            duplicateBehaviorsInContainer.printStackTrace();
+        }
     }
 
     public void detach(FragmentBehavior component) {

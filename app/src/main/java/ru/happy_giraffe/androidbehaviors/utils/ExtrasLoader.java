@@ -8,6 +8,7 @@ import java.util.Map;
 
 import ru.happy_giraffe.androidbehaviors.annotations.BExtra;
 import ru.happy_giraffe.androidbehaviors.behaviors.ActivityBehavior;
+import ru.happy_giraffe.androidbehaviors.exceptions.NotSupportedExtrasType;
 
 /**
  * Created by JimmDiGriz on 26.12.2016.
@@ -109,7 +110,7 @@ public class ExtrasLoader {
                 Class type = field.getType();
 
                 if (!getConfigs().containsKey(type)) {
-                    continue;
+                    throw new NotSupportedExtrasType();
                 }
 
                 getConfigs().get(type).run();

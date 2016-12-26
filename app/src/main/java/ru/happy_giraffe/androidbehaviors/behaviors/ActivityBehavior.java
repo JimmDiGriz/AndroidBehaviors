@@ -1,10 +1,6 @@
 package ru.happy_giraffe.androidbehaviors.behaviors;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.content.res.XmlResourceParser;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -14,14 +10,14 @@ import android.view.View;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import ru.happy_giraffe.androidbehaviors.annotations.BClick;
-import ru.happy_giraffe.androidbehaviors.annotations.BExtra;
 import ru.happy_giraffe.androidbehaviors.annotations.BViewById;
 import ru.happy_giraffe.androidbehaviors.core.Behavior;
 import ru.happy_giraffe.androidbehaviors.core.Container;
+import ru.happy_giraffe.androidbehaviors.exceptions.FieldMustBeInstanceOfView;
+import ru.happy_giraffe.androidbehaviors.exceptions.InvalidOnClickSignature;
+import ru.happy_giraffe.androidbehaviors.exceptions.TargetViewNotFound;
 import ru.happy_giraffe.androidbehaviors.utils.ExtrasLoader;
 import ru.happy_giraffe.androidbehaviors.utils.ResourcesLoader;
 
@@ -29,22 +25,8 @@ import ru.happy_giraffe.androidbehaviors.utils.ResourcesLoader;
  * Created by JimmDiGriz on 22.12.2016.
  */
 public abstract class ActivityBehavior extends Behavior {
-    private static List<Class> availableExtras;
-
     public ActivityBehavior(@NonNull Container owner, String name) {
         super(owner, name);
-
-        availableExtras = new ArrayList<>();
-
-        availableExtras.add(String.class);
-        availableExtras.add(Integer.class);
-        availableExtras.add(Float.class);
-        availableExtras.add(Double.class);
-        availableExtras.add(Boolean.class);
-        availableExtras.add(String[].class);
-        availableExtras.add(Integer[].class);
-        availableExtras.add(Float[].class);
-        availableExtras.add(Double[].class);
     }
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,7 +111,7 @@ public abstract class ActivityBehavior extends Behavior {
                 Class type = field.getType();
 
                 if (!View.class.isAssignableFrom(type)) {
-                    continue;
+                    throw new FieldMustBeInstanceOfView();
                 }
 
                 field.set(this, getView(id, type));
@@ -155,18 +137,18 @@ public abstract class ActivityBehavior extends Behavior {
                     View v = getView(id);
 
                     if (v == null) {
-                        continue;
+                        throw new TargetViewNotFound();
                     }
 
                     final Class[] paramTypes = method.getParameterTypes();
                     final boolean isValidParams = paramTypes.length == 1 && View.class.isAssignableFrom(paramTypes[0]);
 
                     if (paramTypes.length > 1) {
-                        break;
+                        throw new InvalidOnClickSignature();
                     }
 
                     if (paramTypes.length == 1 && !View.class.isAssignableFrom(paramTypes[0])) {
-                        break;
+                        throw new InvalidOnClickSignature();
                     }
 
                     v.setOnClickListener(new View.OnClickListener() {

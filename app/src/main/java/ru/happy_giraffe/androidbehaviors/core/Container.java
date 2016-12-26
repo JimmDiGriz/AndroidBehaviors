@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ru.happy_giraffe.androidbehaviors.exceptions.DuplicateBehaviorsInContainer;
 import ru.happy_giraffe.androidbehaviors.interfaces.OnBehaviorAttachListener;
 import ru.happy_giraffe.androidbehaviors.interfaces.OnBehaviorDetachListener;
 
@@ -71,13 +72,17 @@ public final class Container<T extends Behavior> {
 
     public void fillBehaviors(List<T> components) {
         for (T component : components) {
-            attach(component);
+            try {
+                attach(component);
+            } catch (DuplicateBehaviorsInContainer duplicateBehaviorsInContainer) {
+                duplicateBehaviorsInContainer.printStackTrace();
+            }
         }
     }
 
-    public void attach(T component) {
+    public void attach(T component) throws DuplicateBehaviorsInContainer {
         if (cachedMap.containsKey(component.getName())) {
-            return; //throws there
+            throw new DuplicateBehaviorsInContainer();
         }
 
         components.add(component);

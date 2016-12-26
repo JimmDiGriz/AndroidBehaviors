@@ -24,7 +24,7 @@ import ru.happy_giraffe.androidbehaviors.annotations.resources.BStringRes;
 import ru.happy_giraffe.androidbehaviors.annotations.resources.BTextArrayRes;
 import ru.happy_giraffe.androidbehaviors.annotations.resources.BTextRes;
 import ru.happy_giraffe.androidbehaviors.core.Behavior;
-import ru.happy_giraffe.androidbehaviors.core.Container;
+import ru.happy_giraffe.androidbehaviors.exceptions.InvalidResourceType;
 
 /**
  * Created by JimmDiGriz on 26.12.2016.
@@ -147,7 +147,7 @@ public class ResourcesLoader {
                     Class type = field.getType();
 
                     if (!config.resultClass.isAssignableFrom(type)) {
-                        break;
+                        throw new InvalidResourceType();
                     }
 
                     annotation = field.getAnnotation(config.annotationClass);
