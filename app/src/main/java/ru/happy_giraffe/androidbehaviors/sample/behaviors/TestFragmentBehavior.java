@@ -2,7 +2,6 @@ package ru.happy_giraffe.androidbehaviors.sample.behaviors;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.view.View;
 import android.widget.TextView;
 
 import ru.happy_giraffe.androidbehaviors.R;

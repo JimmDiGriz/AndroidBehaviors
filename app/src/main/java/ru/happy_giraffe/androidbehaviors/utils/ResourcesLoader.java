@@ -32,6 +32,11 @@ import ru.happy_giraffe.androidbehaviors.core.Container;
 public class ResourcesLoader {
     private static List<ResourceConfig> configs;
 
+    private static Field field;
+    private static Annotation annotation;
+    private static AppCompatActivity activity;
+    private static Behavior behavior;
+
     private static List<ResourceConfig> getConfigs() {
         if (configs != null) {
             return configs;
@@ -41,85 +46,85 @@ public class ResourcesLoader {
 
         configs.add(new ResourceConfig(BIntRes.class, Integer.class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadIntResources(field, annotation, activity, behavior);
+            public void load() {
+                loadIntResources();
             }
         }));
 
         configs.add(new ResourceConfig(BStringRes.class, String.class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadStringResources(field, annotation, activity, behavior);
+            public void load() {
+                loadStringResources();
             }
         }));
 
         configs.add(new ResourceConfig(BColorRes.class, Integer.class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadColorResources(field, annotation, activity, behavior);
+            public void load() {
+                loadColorResources();
             }
         }));
 
         configs.add(new ResourceConfig(BDrawableRes.class, Drawable.class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadDrawableResources(field, annotation, activity, behavior);
+            public void load() {
+                loadDrawableResources();
             }
         }));
 
         configs.add(new ResourceConfig(BAnimationRes.class, XmlResourceParser.class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadAnimationResources(field, annotation, activity, behavior);
+            public void load() {
+                loadAnimationResources();
             }
         }));
 
         configs.add(new ResourceConfig(BBooleanRes.class, Boolean.class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadBooleanResources(field, annotation, activity, behavior);
+            public void load() {
+                loadBooleanResources();
             }
         }));
 
         configs.add(new ResourceConfig(BColorStateListRes.class, ColorStateList.class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadColorStateListResources(field, annotation, activity, behavior);
+            public void load() {
+                loadColorStateListResources();
             }
         }));
 
         configs.add(new ResourceConfig(BIntArrayRes.class, Integer[].class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadIntArrayResources(field, annotation, activity, behavior);
+            public  void load() {
+                loadIntArrayResources();
             }
         }));
 
         configs.add(new ResourceConfig(BLayoutRes.class, XmlResourceParser.class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadLayoutResources(field, annotation, activity, behavior);
+            public void load() {
+                loadLayoutResources();
             }
         }));
 
         configs.add(new ResourceConfig(BStringArrayRes.class, String[].class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadStringArrayResources(field, annotation, activity, behavior);
+            public void load() {
+                loadStringArrayResources();
             }
         }));
 
         configs.add(new ResourceConfig(BTextArrayRes.class, CharSequence[].class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadTextArrayResources(field, annotation, activity, behavior);
+            public void load() {
+                loadTextArrayResources();
             }
         }));
 
         configs.add(new ResourceConfig(BTextRes.class, CharSequence.class, new ResourceLoader() {
             @Override
-            public <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
-                loadTextResources(field, annotation, activity, behavior);
+            public void load() {
+                loadTextResources();
             }
         }));
 
@@ -127,9 +132,13 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Behavior> void loadResources(Class<? extends Behavior> object, AppCompatActivity activity, T behavior) {
-        for (Field field: object.getFields()) {
+    public static <T extends Behavior> void loadResources(Class<? extends Behavior> object, AppCompatActivity a, T b) {
+        activity = a;
+        behavior = b;
+
+        for (Field f: object.getFields()) {
             try {
+                field = f;
                 for (ResourceConfig config : getConfigs()) {
                     if (!field.isAnnotationPresent(config.annotationClass)) {
                         continue;
@@ -141,16 +150,23 @@ public class ResourcesLoader {
                         break;
                     }
 
-                    config.method.load(field, field.getAnnotation(config.annotationClass), activity, behavior);
+                    annotation = field.getAnnotation(config.annotationClass);
+
+                    config.method.load();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        activity = null;
+        behavior = null;
+        field = null;
+        annotation = null;
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadIntResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadIntResources() {
         try {
             int id = ((BIntRes) annotation).value();
             field.set(behavior, activity.getResources().getInteger(id));
@@ -160,7 +176,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadStringResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadStringResources() {
         try {
             int id = ((BStringRes) annotation).value();
             field.set(behavior, activity.getResources().getString(id));
@@ -170,7 +186,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadColorResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadColorResources() {
         try {
             int id = ((BColorRes) annotation).value();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -184,7 +200,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadDrawableResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadDrawableResources() {
         try {
             int id = ((BDrawableRes) annotation).value();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -198,7 +214,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadAnimationResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadAnimationResources() {
         try {
             int id = ((BAnimationRes) annotation).value();
             field.set(behavior, activity.getResources().getAnimation(id));
@@ -208,7 +224,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadBooleanResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadBooleanResources() {
         try {
             int id = ((BBooleanRes) annotation).value();
             field.set(behavior, activity.getResources().getBoolean(id));
@@ -218,7 +234,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadColorStateListResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadColorStateListResources() {
         try {
             int id = ((BColorStateListRes) annotation).value();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -232,7 +248,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadIntArrayResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadIntArrayResources() {
         try {
             int id = ((BIntArrayRes) annotation).value();
             field.set(behavior, activity.getResources().getIntArray(id));
@@ -242,7 +258,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadLayoutResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadLayoutResources() {
         try {
             int id = ((BLayoutRes) annotation).value();
             field.set(behavior, activity.getResources().getLayout(id));
@@ -252,7 +268,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadStringArrayResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadStringArrayResources() {
         try {
             int id = ((BStringArrayRes) annotation).value();
             field.set(behavior, activity.getResources().getStringArray(id));
@@ -262,7 +278,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadTextArrayResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadTextArrayResources() {
         try {
             int id = ((BTextArrayRes) annotation).value();
             field.set(behavior, activity.getResources().getTextArray(id));
@@ -272,7 +288,7 @@ public class ResourcesLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Behavior> void loadTextResources(Field field, Annotation annotation, AppCompatActivity activity, T behavior) {
+    private static <T extends Behavior> void loadTextResources() {
         try {
             int id = ((BTextRes) annotation).value();
             field.set(behavior, activity.getResources().getText(id));
@@ -294,6 +310,6 @@ public class ResourcesLoader {
     }
 
     private interface ResourceLoader {
-        <T extends Behavior> void load(Field field, Annotation annotation, AppCompatActivity activity, T behavior);
+        void load();
     }
 }

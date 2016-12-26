@@ -14,32 +14,37 @@ import android.view.View;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import ru.happy_giraffe.androidbehaviors.annotations.BClick;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BAnimationRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BBooleanRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BColorRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BColorStateListRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BDrawableRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BIntArrayRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BIntRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BLayoutRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BMovieRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BStringArrayRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BStringRes;
+import ru.happy_giraffe.androidbehaviors.annotations.BExtra;
 import ru.happy_giraffe.androidbehaviors.annotations.BViewById;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BTextArrayRes;
-import ru.happy_giraffe.androidbehaviors.annotations.resources.BTextRes;
 import ru.happy_giraffe.androidbehaviors.core.Behavior;
 import ru.happy_giraffe.androidbehaviors.core.Container;
+import ru.happy_giraffe.androidbehaviors.utils.ExtrasLoader;
 import ru.happy_giraffe.androidbehaviors.utils.ResourcesLoader;
 
 /**
  * Created by JimmDiGriz on 22.12.2016.
  */
 public abstract class ActivityBehavior extends Behavior {
+    private static List<Class> availableExtras;
+
     public ActivityBehavior(@NonNull Container owner, String name) {
         super(owner, name);
+
+        availableExtras = new ArrayList<>();
+
+        availableExtras.add(String.class);
+        availableExtras.add(Integer.class);
+        availableExtras.add(Float.class);
+        availableExtras.add(Double.class);
+        availableExtras.add(Boolean.class);
+        availableExtras.add(String[].class);
+        availableExtras.add(Integer[].class);
+        availableExtras.add(Float[].class);
+        availableExtras.add(Double[].class);
     }
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +64,7 @@ public abstract class ActivityBehavior extends Behavior {
         getAnnotatedViews(object);
         attachClickListeners(object);
         loadResources(object);
+        getAnnotatedExtras(object);
     }
 
     public void onRestart() {
@@ -183,6 +189,11 @@ public abstract class ActivityBehavior extends Behavior {
                 e.printStackTrace();
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void getAnnotatedExtras(Class<? extends ActivityBehavior> object) {
+        ExtrasLoader.loadExtras(this, getActivity());
     }
 
     private void loadResources(Class<? extends ActivityBehavior> object) {

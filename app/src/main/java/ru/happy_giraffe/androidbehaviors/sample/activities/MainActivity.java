@@ -1,5 +1,8 @@
 package ru.happy_giraffe.androidbehaviors.sample.activities;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+
 import org.androidannotations.annotations.EActivity;
 
 import ru.happy_giraffe.androidbehaviors.R;
@@ -12,7 +15,12 @@ public class MainActivity extends BehavioralActivity {
     @ABehavior(name = "test")
     protected TestBehavior testBehavior;
 
-//    @ABehavior(name = "test2")
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    //    @ABehavior(name = "test2")
 //    protected TestBehavior testBehavior2;
 //
 //    @ABehavior(name = "test3")
