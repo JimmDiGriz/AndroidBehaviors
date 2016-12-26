@@ -2,6 +2,7 @@ package ru.happy_giraffe.androidbehaviors.containers;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -121,6 +122,7 @@ public class BehavioralFragment extends Fragment {
 
     @Nullable
     @Override
+    @CallSuper
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = super.onCreateView(inflater, container, savedInstanceState);
 
