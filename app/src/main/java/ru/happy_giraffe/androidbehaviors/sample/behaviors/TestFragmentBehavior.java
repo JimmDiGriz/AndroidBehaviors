@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import ru.happy_giraffe.androidbehaviors.R;
+import ru.happy_giraffe.androidbehaviors.annotations.BClick;
+import ru.happy_giraffe.androidbehaviors.annotations.BViewById;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BStringRes;
 import ru.happy_giraffe.androidbehaviors.behaviors.FragmentBehavior;
 import ru.happy_giraffe.androidbehaviors.core.Container;
 
@@ -13,7 +16,12 @@ import ru.happy_giraffe.androidbehaviors.core.Container;
  * Created by JimmDiGriz on 26.12.2016.
  */
 public class TestFragmentBehavior extends FragmentBehavior {
-    private TextView messageTxt;
+    @BViewById(R.id.message_txt)
+    protected TextView messageTxt;
+
+    @BStringRes(R.string.test_string)
+    protected String testString;
+
     private int counter = 0;
 
     public TestFragmentBehavior(@NonNull Container owner, String name, Fragment fragment) {
@@ -24,13 +32,11 @@ public class TestFragmentBehavior extends FragmentBehavior {
     public void onStart() {
         super.onStart();
 
-        messageTxt = getFragmentView(R.id.message_txt, TextView.class);
+        messageTxt.setText(testString);
+    }
 
-        messageTxt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                messageTxt.setText(String.valueOf(counter++));
-            }
-        });
+    @BClick(R.id.message_txt)
+    protected void onMessageTxtClick() {
+        messageTxt.setText(String.valueOf(counter++));
     }
 }

@@ -1,6 +1,10 @@
 package ru.happy_giraffe.androidbehaviors.behaviors;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.XmlResourceParser;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -8,16 +12,27 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import ru.happy_giraffe.androidbehaviors.annotations.ABehavior;
 import ru.happy_giraffe.androidbehaviors.annotations.BClick;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BAnimationRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BBooleanRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BColorRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BColorStateListRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BDrawableRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BIntArrayRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BIntRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BLayoutRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BMovieRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BStringArrayRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BStringRes;
 import ru.happy_giraffe.androidbehaviors.annotations.BViewById;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BTextArrayRes;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BTextRes;
 import ru.happy_giraffe.androidbehaviors.core.Behavior;
 import ru.happy_giraffe.androidbehaviors.core.Container;
+import ru.happy_giraffe.androidbehaviors.utils.ResourcesLoader;
 
 /**
  * Created by JimmDiGriz on 22.12.2016.
@@ -39,8 +54,11 @@ public abstract class ActivityBehavior extends Behavior {
      * */
     @CallSuper
     public void onStart() {
-        getAnnotatedViews();
-        attachClickListeners();
+        Class<? extends ActivityBehavior> object = getClass();
+
+        getAnnotatedViews(object);
+        attachClickListeners(object);
+        loadResources(object);
     }
 
     public void onRestart() {
@@ -87,9 +105,7 @@ public abstract class ActivityBehavior extends Behavior {
     }
 
     @SuppressWarnings("unchecked")
-    private void getAnnotatedViews() {
-        Class<? extends ActivityBehavior> object = getClass();
-
+    private void getAnnotatedViews(Class<? extends ActivityBehavior> object) {
         for (Field field: object.getFields()) {
             try {
                 if (!field.isAnnotationPresent(BViewById.class)) {
@@ -118,9 +134,7 @@ public abstract class ActivityBehavior extends Behavior {
     }
 
     @SuppressWarnings("unchecked")
-    private void attachClickListeners() {
-        Class<? extends ActivityBehavior> object = getClass();
-
+    private void attachClickListeners(Class<? extends ActivityBehavior> object) {
         for (final Method method: object.getMethods()) {
             try {
                 if (!method.isAnnotationPresent(BClick.class)) {
@@ -140,6 +154,14 @@ public abstract class ActivityBehavior extends Behavior {
 
                     final Class[] paramTypes = method.getParameterTypes();
                     final boolean isValidParams = paramTypes.length == 1 && View.class.isAssignableFrom(paramTypes[0]);
+
+                    if (paramTypes.length > 1) {
+                        break;
+                    }
+
+                    if (paramTypes.length == 1 && !View.class.isAssignableFrom(paramTypes[0])) {
+                        break;
+                    }
 
                     v.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -161,5 +183,9 @@ public abstract class ActivityBehavior extends Behavior {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void loadResources(Class<? extends ActivityBehavior> object) {
+        ResourcesLoader.loadResources(object, getActivity(), this);
     }
 }

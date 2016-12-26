@@ -6,6 +6,7 @@ import android.widget.TextView;
 import ru.happy_giraffe.androidbehaviors.R;
 import ru.happy_giraffe.androidbehaviors.annotations.BClick;
 import ru.happy_giraffe.androidbehaviors.annotations.BViewById;
+import ru.happy_giraffe.androidbehaviors.annotations.resources.BStringRes;
 import ru.happy_giraffe.androidbehaviors.behaviors.ActivityBehavior;
 import ru.happy_giraffe.androidbehaviors.core.Container;
 
@@ -15,6 +16,9 @@ import ru.happy_giraffe.androidbehaviors.core.Container;
 public class TestBehavior extends ActivityBehavior {
     @BViewById(R.id.message_txt)
     protected TextView messageTxt;
+
+    @BStringRes(R.string.test_string)
+    protected String testString;
 
     private int counter = 0;
 
@@ -26,12 +30,7 @@ public class TestBehavior extends ActivityBehavior {
     public void onStart() {
         super.onStart();
 
-//        messageTxt.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                messageTxt.setText(String.valueOf(counter++));
-//            }
-//        });
+        messageTxt.setText(testString);
     }
 
     @BClick(R.id.message_txt)

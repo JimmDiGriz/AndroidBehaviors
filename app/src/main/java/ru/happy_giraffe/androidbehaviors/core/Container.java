@@ -22,10 +22,13 @@ public final class Container<T extends Behavior> {
     private OnBehaviorAttachListener<T> onBehaviorAttachListener;
     private OnBehaviorDetachListener<T> onBehaviorDetachListener;
 
+//    private Map<Integer, Object> resourceCache;
+
     public Container(Context context) {
         components = new ArrayList<>();
         cachedMap = new HashMap<>();
         this.context = context;
+//        resourceCache = new HashMap<>();
     }
 
     public List<T> getComponents() {
@@ -117,7 +120,7 @@ public final class Container<T extends Behavior> {
         callAttachListener(component);
     }
 
-    public void destroy(){
+    public void destroy() {
         this.components = null;
         this.cachedMap = null;
         this.context = null;
@@ -140,4 +143,20 @@ public final class Container<T extends Behavior> {
             onBehaviorAttachListener.attach(behavior);
         }
     }
+
+//    public void setCache(int key, Object value) {
+//        if (resourceCache.containsKey(key)) {
+//            return;
+//        }
+//
+//        resourceCache.put(key, value);
+//    }
+//
+//    public Object getCache(int key) {
+//        if (!resourceCache.containsKey(key)) {
+//            return null;
+//        }
+//
+//        return resourceCache.get(key);
+//    }
 }

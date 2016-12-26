@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">androidbehaviors</string>
+    <string name="test_string">test</string>
 </resources>
