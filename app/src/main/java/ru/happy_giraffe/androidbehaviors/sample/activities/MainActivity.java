@@ -12,12 +12,12 @@ public class MainActivity extends BehavioralActivity {
     @ABehavior(name = "test")
     protected TestBehavior testBehavior;
 
-    @ABehavior(name = "test2")
-    protected TestBehavior testBehavior2;
-
-    @ABehavior(name = "test3")
-    protected TestBehavior testBehavior3;
-
-    @ABehavior(name = "test4")
-    protected TestBehavior testBehavior4;
+//    @ABehavior(name = "test2")
+//    protected TestBehavior testBehavior2;
+//
+//    @ABehavior(name = "test3")
+//    protected TestBehavior testBehavior3;
+//
+//    @ABehavior(name = "test4")
+//    protected TestBehavior testBehavior4;
 }

@@ -1,5 +1,6 @@
 package ru.happy_giraffe.androidbehaviors.containers;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -163,6 +164,15 @@ public abstract class BehavioralActivity extends AppCompatActivity {
         }
 
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        for (ActivityBehavior behavior : container.getComponents()) {
+            behavior.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     protected void onBehaviorAttach(ActivityBehavior behavior) {
